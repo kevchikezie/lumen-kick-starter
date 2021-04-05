@@ -8,20 +8,20 @@ use  App\User;
 class AuthService
 {
     /**
-     * The default column used as a primary key for searching a table
+     * Class properties
      *
-     * @var string
+     * @var
      */
-    // protected $defaultAttribute = 'uid';
+    private $user;
 
 	/**
      * Create a new service instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct()
     {
-        $this->user = $user;
+        $this->user = new User;
     }
 
     /**

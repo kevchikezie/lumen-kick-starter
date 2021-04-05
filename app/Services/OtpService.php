@@ -10,14 +10,21 @@ use App\User;
 
 class OtpService
 {
+    /**
+     * Class properties
+     *
+     * @var
+     */
+    private $user;
+
 	/**
      * Create a new service instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct()
     {
-        $this->user = $user;
+        $this->user = new User;
     }
 
     /**
@@ -66,29 +73,30 @@ class OtpService
             $otp->update(['sent_at' => Carbon::now()]);
 
         } catch (\Exception $e) {
-            \Log::error($e);
+            \Log::error('Error while sending OTP: '. $e);
         }        
     }
 
-    /** Attempt to resend OTP to user
-    * 
-    * @param  App\User  $user
-    * @return void
-    * 
-    * @throws \Exception
-    */
+    /** 
+     *Attempt to resend OTP to user
+     * 
+     * @param  App\User  $user
+     * @return void
+     * 
+     * @throws \Exception
+     */
    public function resend(User $user)
    {
        $this->send($user);
    }
 
-   /**
-    * Verify the OTP that was sent to the user and update the verified_at
-    * 
-    * @param  App\User  $user
-    * @param  string  otp
-    * @return array
-    */
+    /**
+     * Verify the OTP that was sent to the user and update the verified_at
+     * 
+     * @param  App\User  $user
+     * @param  string  otp
+     * @return array
+     */
     public function verify(User $user, $otp)
     {
         $data = $user->otps()->where('user_id', $user->uid)

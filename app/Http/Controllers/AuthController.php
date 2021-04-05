@@ -19,7 +19,7 @@ class AuthController extends Controller
     private $authValidation;
     private $authService;
     private $otpService;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -63,7 +63,7 @@ class AuthController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
-            \Log::error('Error during registration', $e);
+            \Log::error('Error during registration: ', $e);
 
             return response()->json([
                 'status' => 'error',
