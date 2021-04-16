@@ -40,7 +40,7 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {        
-        $validator = $this->authValidation->store($request->all());
+        $validator = $this->authValidation->register($request->all());
 
         if ($validator->fails()) {
             return response()->json([
@@ -80,10 +80,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $this->validate($request, [
-            'email' => ['required', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'max:255'],
-        ]);
+        $validator = $this->authValidation->login($request->all());
 
         $credentials = $request->only(['email', 'password']);
 

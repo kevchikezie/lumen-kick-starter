@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\OtpMail;
 use Carbon\Carbon;
-use App\User;
+use App\Models\Otp;
 
 class OtpService
 {
@@ -15,7 +15,7 @@ class OtpService
      *
      * @var
      */
-    private $user;
+    private $otp;
 
 	/**
      * Create a new service instance.
@@ -24,7 +24,7 @@ class OtpService
      */
     public function __construct()
     {
-        $this->user = new User;
+        $this->otp = new Otp;
     }
 
     /**
@@ -51,24 +51,45 @@ class OtpService
     }
 
     /**
-     * Send OTP to user
+     * Send OTP to an email or phone
      * 
-     * @param  App\User  $user
+     * @param  string  $senderId
+     * @param  string|array  $destination
      * @return bool
      * 
      * @throws \Exception
      */
-    public function send(User $user)
+    public function send($senderId, $destination)
     {
         try {
-            $otp = $user->otps()->create([
+            $otp = $this->otp->create([
                 'otp' => $this->generate(),
-                'user_id' => $user->uid,
+                'sender_id' => $senderId,
                 'uid' => (string) Str::uuid(),
                 'expires_at' => Carbon::now()->addMinutes(20),
             ]);
 
-            Mail::to($user->email)->send(new OtpMail($otp));
+            if (is_array($destination)) {
+                if (isset($destination['email'])) {
+                    if (filter_var($destination['email'], FILTER_VALIDATE_EMAIL)) {
+                        Mail::to($destination)->send(new OtpMail($otp));
+                    }
+                }
+
+                if (isset($destination['phone'])) {
+                    if (is_numeric($destination['phone'])) {
+                        // TODO: Send SMS to phone number
+                    }
+                }
+            } else {
+                if (filter_var($destination, FILTER_VALIDATE_EMAIL)) {
+                    Mail::to($destination)->send(new OtpMail($otp));
+                }
+
+                if (is_numeric($destination)) {
+                    // TODO: Send SMS to phone number
+                }
+            }
 
             $otp->update(['sent_at' => Carbon::now()]);
 
@@ -78,28 +99,29 @@ class OtpService
     }
 
     /** 
-     *Attempt to resend OTP to user
+     *Attempt to resend OTP
      * 
-     * @param  App\User  $user
+     * @param  string  $senderId
+     * @param  string  $destination
      * @return void
      * 
      * @throws \Exception
      */
-   public function resend(User $user)
+   public function resend($senderId, $destination)
    {
-       $this->send($user);
+       $this->send($senderId, $destination);
    }
 
     /**
-     * Verify the OTP that was sent to the user and update the verified_at
+     * Verify the OTP that was sent to the sender and update the verified_at
      * 
-     * @param  App\User  $user
+     * @param  string  $senderId
      * @param  string  otp
      * @return array
      */
-    public function verify(User $user, $otp)
+    public function verify($senderId, $otp)
     {
-        $data = $user->otps()->where('user_id', $user->uid)
+        $data = $this->otp->where('sender_id', $senderId)
                              ->where('otp', $otp)
                              ->where('verified_at', NULL)
                              ->first();

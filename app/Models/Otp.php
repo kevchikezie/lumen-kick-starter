@@ -12,7 +12,7 @@ class Otp extends Model
      * @var array
      */
     protected $fillable = [
-        'otp', 'user_id', 'uid', 'expires_at', 'verified_at', 'sent_at',
+        'otp', 'sender_id', 'uid', 'expires_at', 'verified_at', 'sent_at',
     ];
 
     /**

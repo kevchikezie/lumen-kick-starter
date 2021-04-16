@@ -71,7 +71,9 @@ class VerificationController extends Controller
     public function resendVerificiationEmail()
     {
         try {
-            $this->otpService->resend(Auth::user());
+            $user = Auth::user();
+
+            $this->otpService->resend($user->uid, $user->email);
 
             return response()->json([
                 'status' => 'success',

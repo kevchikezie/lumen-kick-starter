@@ -16,18 +16,12 @@ class CreateOtpsTable extends Migration
         Schema::create('otps', function (Blueprint $table) {
             $table->id();
             $table->uuid('uid')->unique();
-            $table->uuid('user_id');
+            $table->uuid('sender_id');
             $table->string('otp', 20)->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->timestamp('sent_at')->nullable();
             $table->timestamps();
-
-            $table->foreign('user_id')
-                  ->references('uid')
-                  ->on('users')
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
         });
     }
 
