@@ -21,27 +21,15 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 	    ], 200);
 	});
 
-	$router->post('auth/register', [
-		'as' => 'register', 'uses' => 'AuthController@register'
-	]);
-	   
-	$router->post('auth/login', [
-		'as' => 'login', 'uses' => 'AuthController@login'
-	]);
+	$router->post('auth/register','AuthController@register');
+	$router->post('auth/login', 'AuthController@login');
+	$router->post('auth/password/forgot', "ForgotPasswordController@sendOtp");
+	$router->post('auth/password/reset', "ForgotPasswordController@reset");
 
    	$router->group(['middleware' => ['auth']], function () use ($router) {
-		$router->post('auth/profile', [
-			'as' => 'profile', 'uses' => 'AuthController@profile'
-		]); //TODO: Apply the verify middleware here
-
-		$router->post('verify/email', [
-			'as' => 'verify.email', 'uses' => 'VerificationController@verifyEmail'
-		]);
-
-		$router->get('verify/email/resend', [
-			'as' => 'verify.email.resend', 'uses' => 'VerificationController@resendVerificiationEmail'
-		]);
-		
+		$router->post('auth/profile', 'AuthController@profile'); //TODO: Apply the verify middleware here
+		$router->post('verify/email', 'VerificationController@verifyEmail');
+		$router->get('verify/email/resend', 'VerificationController@resendVerificiationEmail');
 	});
 
 });

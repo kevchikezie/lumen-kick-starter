@@ -54,7 +54,7 @@ class AuthController extends Controller
             $user = $this->authService->registerUser($request->toArray());
             DB::commit();
 
-            $this->otpService->send($user);
+            $this->otpService->send($user->uid, $user->email);
 
             return response()->json([
                 'status' => 'success',

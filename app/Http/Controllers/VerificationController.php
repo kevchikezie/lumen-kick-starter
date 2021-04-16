@@ -11,14 +11,22 @@ use Carbon\Carbon;
 class VerificationController extends Controller
 {
     /**
+     * Class properties
+     *
+     * @var
+     */
+    private $otpService;
+    private $authService;
+
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(OtpService $otpService, AuthService $authService)
+    public function __construct()
     {
-        $this->otpService = $otpService;
-        $this->authService = $authService;
+        $this->otpService = new OtpService;
+        $this->authService = new AuthService;
     }
 
     /** 
@@ -34,7 +42,7 @@ class VerificationController extends Controller
         ]);
 
         try {
-            $verified = $this->otpService->verify(Auth::user(), $request->otp);
+            $verified = $this->otpService->verify(Auth::user()->uid, $request->otp);
 
             if (isset($verified['status']) && $verified['status'] === 'error' ) {
                 return response()->json([
