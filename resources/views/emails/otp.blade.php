@@ -3,7 +3,7 @@
         Hello, <br><br>
 
         Please, use this OTP below to complete your registration. <br>
-        OTP: {{ $otp->otp }} <br><br>
+        <h6>OTP: <code>{{ $otp->otp }}</code></h6>
 
         This OTP has an expiry period of 20 minutes. <br><br>
 

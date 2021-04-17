@@ -56,14 +56,22 @@ class AuthController extends Controller
 
             $this->otpService->send($user->uid, $user->email);
 
+            $credentials = $request->only(['email', 'password']);
+            $token = Auth::attempt($credentials);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Registration successful',
-                'data' => $user
+                'data' => [ 
+                    'user' => $user,
+                    'token' => $token,
+                    'token_type' => 'bearer',
+                    'expires_in' => Auth::factory()->getTTL() * 60
+                ]
             ], 201);
 
         } catch (\Exception $e) {
-            \Log::error('Error during registration: ', $e);
+            \Log::error(['Error during registration: ' => $e]);
 
             return response()->json([
                 'status' => 'error',
@@ -90,9 +98,6 @@ class AuthController extends Controller
                 'message' => 'Invalid email or password!'
             ], 403);
         }
-
-        // TODO: Check if email has been verified (this should be a middleware)
-        // TODO: Check if user has an is_active status (this should be a middleware)
 
         return response()->json([
             'status' => 'success',

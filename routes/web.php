@@ -11,13 +11,20 @@
 |
 */
 
+$router->get('/', function () use ($router) {
+    return response()->json([	
+    	'status' => 'success',
+    	'message' => 'Welcome to Bizpotta API',
+    	'version' => 1.0,
+    ], 200);
+});
 
 $router->group(['prefix' => 'api/v1'], function () use ($router) {
 	$router->get('/', function () use ($router) {
-	    return response()->json([
+	    return response()->json([	
 	    	'status' => 'success',
 	    	'message' => 'API is running',
-	    	'version' => 1
+	    	'version' => 1.0,
 	    ], 200);
 	});
 
@@ -26,8 +33,8 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 	$router->post('auth/password/forgot', "ForgotPasswordController@sendOtp");
 	$router->post('auth/password/reset', "ForgotPasswordController@reset");
 
-   	$router->group(['middleware' => ['auth']], function () use ($router) {
-		$router->post('auth/profile', 'AuthController@profile'); //TODO: Apply the verify middleware here
+   	$router->group(['middleware' => ['auth', 'is.active']], function () use ($router) {
+		$router->get('auth/profile', ['uses' => 'AuthController@profile', 'middleware' => 'verified']);
 		$router->post('verify/email', 'VerificationController@verifyEmail');
 		$router->get('verify/email/resend', 'VerificationController@resendVerificiationEmail');
 	});

@@ -60,6 +60,9 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('database');
+$app->configure('logging');
+$app->configure('mail');
 
 /*
 |--------------------------------------------------------------------------
@@ -72,13 +75,14 @@ $app->configure('app');
 |
 */
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
+$app->middleware([
+    App\Http\Middleware\CorsMiddleware::class,
+]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'verified' => App\Http\Middleware\Verify::class,
+    'is.active' => App\Http\Middleware\EnsureUserIsActive::class,
+    'verified' => App\Http\Middleware\EnsureEmailIsVerified::class,
 ]);
 
 /*
@@ -101,8 +105,6 @@ $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(Illuminate\Mail\MailServiceProvider::class);
-
-$app->configure('mail');
 
 $app->alias('mail.manager', Illuminate\Mail\MailManager::class);
 $app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);

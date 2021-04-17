@@ -77,6 +77,26 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return [];
     }
 
+    /**
+     * Determine if the user has verified their email address.
+     *
+     * @return bool
+     */
+    public function hasVerifiedEmail()
+    {
+        return ! is_null($this->email_verified_at);
+    }
+
+    /**
+     * Determine if the user's account is active.
+     *
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->is_active;
+    }
+
     // Table Relationships
     public function otps()
     {

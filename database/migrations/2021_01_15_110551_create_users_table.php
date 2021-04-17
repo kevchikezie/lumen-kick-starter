@@ -23,6 +23,9 @@ class CreateUsersTable extends Migration
             $table->boolean('is_active')->default(1);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('business_name')->nullable();
+            $table->string('business_category')->nullable();
+            $table->string('stage_of_business')->nullable();
             $table->string('image_url')->nullable();
             $table->string('image_name')->nullable();
             $table->timestamps();
