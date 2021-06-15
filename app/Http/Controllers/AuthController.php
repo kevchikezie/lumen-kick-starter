@@ -16,9 +16,9 @@ class AuthController extends Controller
      *
      * @var
      */
-    private $authValidation;
-    private $authService;
     private $otpService;
+    private $authService;
+    private $authValidation;
 
     /**
      * Create a new controller instance.
@@ -27,9 +27,9 @@ class AuthController extends Controller
      */
     public function __construct() 
     {
-        $this->authValidation = new AuthValidation;
-        $this->authService = new AuthService;
         $this->otpService = new OtpService;
+        $this->authService = new AuthService;
+        $this->authValidation = new AuthValidation;
     }
 
     /**

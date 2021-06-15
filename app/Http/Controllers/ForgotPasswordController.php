@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ForgotPasswordService;
-use App\Services\OtpService;
 use Illuminate\Http\Request;
+use App\Services\OtpService;
+use App\Services\ForgotPasswordService;
 
 class ForgotPasswordController extends Controller
 {
@@ -40,22 +40,16 @@ class ForgotPasswordController extends Controller
         ]);
 
     	if ($validator->fails()) {
-            return response()->json([
-                'status' =>  'error', 
-                'message' =>  $validator->errors()->first()
-            ], 400);
+            return $this->errorResponse($validator->errors()->first());
         }
 
         $user = $this->forgotPasswordService->verifyUser($request->email);
-        // Only send OTP if email exists
+        // Only send OTP if the supplied email exists in the database
         if ($user) {
         	$this->otpService->send($user->uid, $user->email);
         }
 
-    	return response()->json([
-            'status' => 'success',
-            'message' => 'If the email you entered is correct, an OTP has been sent to the email',
-        ], 200);
+        return $this->successResponse('', 'If the email you entered is correct, an OTP has been sent to the email');
     }
 
     /**
