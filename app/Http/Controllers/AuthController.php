@@ -43,10 +43,7 @@ class AuthController extends Controller
         $validator = $this->authValidation->register($request->all());
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' =>  'error', 
-                'message' =>  $validator->errors()->first()
-            ], 400);
+            return $this->errorResponse($validator->errors()->first());
         }
 
         try {
@@ -59,24 +56,18 @@ class AuthController extends Controller
             $credentials = $request->only(['email', 'password']);
             $token = Auth::attempt($credentials);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Registration successful',
-                'data' => [ 
-                    'user' => $user,
-                    'token' => $token,
-                    'token_type' => 'bearer',
-                    'expires_in' => Auth::factory()->getTTL() * 60
-                ]
-            ], 201);
+            $data = [ 
+                'user' => $user,
+                'token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => Auth::factory()->getTTL() * 60
+            ];
+
+            return $this->successResponse($data, 'Registration successful', 201);
 
         } catch (\Exception $e) {
             \Log::error(['Error during registration: ' => $e]);
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Something went wrong!'
-            ], 500);
+            return $this->errorResponse('Something went wrong!', 500);
         }
     }
 
