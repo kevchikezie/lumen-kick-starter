@@ -84,22 +84,17 @@ class AuthController extends Controller
         $credentials = $request->only(['email', 'password']);
 
         if (! $token = Auth::attempt($credentials)) {
-            return response()->json([
-                'status' => 'error', 
-                'message' => 'Invalid email or password!'
-            ], 403);
+            return $this->errorResponse('Invalid email or password!', 403);
         }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Authenticated successfully',
-            'data' => [
-                'user' => Auth::user(),
-                'token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => Auth::factory()->getTTL() * 60
-            ]
-        ], 200);
+        $data = [
+            'user' => Auth::user(),
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => Auth::factory()->getTTL() * 60
+        ];
+
+        return $this->successResponse($data, 'Authenticated successfully', 200);
     }
 
     /**
