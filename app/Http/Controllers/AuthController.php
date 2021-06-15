@@ -104,7 +104,7 @@ class AuthController extends Controller
      */
     public function profile()
     {
-        return $this->successResponse(Auth::user(), 'Fetched login user');
+        return $this->successResponse(Auth::user(), 'Fetched loggd in user');
     }
 
 }
