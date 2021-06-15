@@ -94,7 +94,7 @@ class AuthController extends Controller
             'expires_in' => Auth::factory()->getTTL() * 60
         ];
 
-        return $this->successResponse($data, 'Authenticated successfully', 200);
+        return $this->successResponse($data, 'Authenticated successfully');
     }
 
     /**
@@ -104,11 +104,7 @@ class AuthController extends Controller
      */
     public function profile()
     {
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Fetched user profile',
-            'data' => Auth::user()
-        ], 200);
+        return $this->successResponse(Auth::user(), 'Fetched login user');
     }
 
 }
