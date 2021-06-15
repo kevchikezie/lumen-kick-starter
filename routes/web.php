@@ -14,7 +14,7 @@
 $router->get('/', function () use ($router) {
     return response()->json([	
     	'status' => 'success',
-    	'message' => 'Welcome to Bizpotta API',
+    	'message' => 'Welcome to the API',
     	'version' => 1.0,
     ], 200);
 });
@@ -23,7 +23,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 	$router->get('/', function () use ($router) {
 	    return response()->json([	
 	    	'status' => 'success',
-	    	'message' => 'API is running',
+	    	'message' => 'API is up and running',
 	    	'version' => 1.0,
 	    ], 200);
 	});
