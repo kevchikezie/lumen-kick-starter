@@ -31,11 +31,11 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 	$router->post('auth/register','AuthController@register');
 	$router->post('auth/login', 'AuthController@login');
 	$router->post('auth/password/forgot', "ForgotPasswordController@sendOtp");
-	$router->post('auth/password/reset', "ForgotPasswordController@reset");
+	$router->patch('auth/password/reset', "ForgotPasswordController@reset");
 
    	$router->group(['middleware' => ['auth', 'is.active']], function () use ($router) {
 		$router->get('auth/profile', ['uses' => 'AuthController@profile', 'middleware' => 'verified']);
-		$router->post('verify/email', 'VerificationController@verifyEmail');
+		$router->patch('verify/email', 'VerificationController@verifyEmail');
 		$router->get('verify/email/resend', 'VerificationController@resendVerificiationEmail');
 	});
 

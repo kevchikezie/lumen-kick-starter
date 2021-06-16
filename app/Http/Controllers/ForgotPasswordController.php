@@ -28,7 +28,7 @@ class ForgotPasswordController extends Controller
     }
 
 	/**
-     * Send OTP to user's email
+     * Send the OTP that will be used to reset the password to the user's email 
      *
      * @param  Request  $request
      * @return Response
@@ -60,6 +60,23 @@ class ForgotPasswordController extends Controller
      */
     public function reset(Request $request)
     {
+        $validator = \Validator::make($request->all(), [
+            'email' => ['required', 'email', 'max:255'],
+            'otp' => ['required'],
+        ]);
 
+    	if ($validator->fails()) {
+            return $this->errorResponse($validator->errors()->first());
+        }
+
+        $user = $this->forgotPasswordService->verifyUser($request->email);
+        if (! $user) {
+        	return $this->errorResponse('Email does not exist', 400);
+        }
+
+        // verify otp
+        // hash password and send to service
+
+        return $this->successResponse('', 'Password reset successful');
     }
 }
